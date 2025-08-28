@@ -16,3 +16,5 @@ EXPOSE 8080
 
 # ✅ Added this CMD to make sure nginx runs in foreground
 CMD ["nginx", "-g", "daemon off;"]
+
+
