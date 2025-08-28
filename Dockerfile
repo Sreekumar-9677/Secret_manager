@@ -10,3 +10,9 @@ RUN npm run build --configuration=production
 FROM nginx:alpine
 COPY --from=builder /app/dist/my-secret-app/browser /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# ✅ Added this line so Cloud Run knows which port to listen on
+EXPOSE 8080  
+
+# ✅ Added this CMD to make sure nginx runs in foreground
+CMD ["nginx", "-g", "daemon off;"]
