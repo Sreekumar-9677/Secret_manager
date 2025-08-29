@@ -20,6 +20,7 @@ RUN rm /etc/nginx/conf.d/default.conf
 # Copy Angular build output
 COPY --from=builder /app/dist/my-secret-app/browser .
 
+
 # Copy NGINX template config
 COPY nginx.conf.template /etc/nginx/templates/default.conf.template
 
@@ -28,7 +29,8 @@ RUN apk add --no-cache gettext
 
 # Replace ${PORT} and start NGINX in foreground
 CMD envsubst '${PORT}' < /etc/nginx/templates/default.conf.template > /etc/nginx/conf.d/default.conf \
-    && nginx -g 'daemon off;'
+&& nginx -g 'daemon off;'
+
 
 # Expose Cloud Run port
 EXPOSE 8080
