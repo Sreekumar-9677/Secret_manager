@@ -35,21 +35,29 @@
 # # Expose Cloud Run port
 # EXPOSE 8080
 
-# Stage 1: Build the Angular application
+## Stage 1# Stage 1: Build Angular app
 FROM node:lts-alpine as build
 WORKDIR /app
+
 COPY package.json package-lock.json ./
 RUN npm install
+
 COPY . .
 RUN npm run build --prod
 
-# Stage 2: Serve the application with Nginx
+# Stage 2: Serve with Nginx
 FROM nginx:alpine
-# Copy the custom Nginx configuration
+
+# Copy custom Nginx config
 COPY nginx.conf /etc/nginx/conf.d/default.conf
-# Copy the built application from the build stage to Nginx's public directory
-COPY --from=build /app/dist/my-secret-app /browser/usr/share/nginx/html
-# Expose port 80 to the outside world
-EXPOSE 80
-# Start Nginx in the foreground
+
+# Copy Angular build output
+COPY --from=build /app/dist/my-secret-app/browser /usr/share/nginx/html
+
+# Expose Cloud Run port
+EXPOSE 8080
+
 CMD ["nginx", "-g", "daemon off;"]
+
+
+
