@@ -16,8 +16,14 @@ RUN rm /etc/nginx/conf.d/default.conf
 # Copy Angular build
 COPY --from=builder /app/dist/my-secret-app/browser .
 
-# Copy Nginx template config (Cloud Run needs ${PORT})
-COPY nginx.conf /etc/nginx/templates/default.conf.template
+# Copy Nginx template config
+COPY nginx.conf.template /etc/nginx/templates/default.conf.template
 
-# Cloud Run will send traffic to port 8080
+# Install envsubst
+RUN apk add --no-cache gettext
+
+# Replace template variables and start NGINX
+CMD envsubst '${PORT}' < /etc/nginx/templates/default.conf.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'
+
+# Expose Cloud Run port
 EXPOSE 8080
